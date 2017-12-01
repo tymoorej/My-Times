@@ -6,23 +6,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class secondActivity extends AppCompatActivity {
+public class ViewGoodTimes extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_second);
+        setContentView(R.layout.activity_view_good_times);
 
-
-        Button switchButton = findViewById(R.id.button2);
-        switchButton.setOnClickListener(new View.OnClickListener() {
+        Button back= findViewById(R.id.b_back);
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(secondActivity.this, MainActivity.class);
+                Intent intent = new Intent(ViewGoodTimes.this, MainActivity.class);
                 startActivity(intent);
-
             }
         });
-
     }
 }

@@ -2,10 +2,7 @@ package com.tymoorejamal.mytimes;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,19 +14,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
 
-        Button switchButton = findViewById(R.id.button);
-        switchButton.setOnClickListener(new View.OnClickListener() {
+        Button switchButton1 = findViewById(R.id.b_viewgoodtimes);
+        switchButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,secondActivity.class);
+                Intent intent = new Intent(MainActivity.this, ViewGoodTimes.class);
                 startActivity(intent);
 
             }
         });
+
+        Button switchButton2 = findViewById(R.id.b_addgoodtime);
+        switchButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AddGoodTime.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
