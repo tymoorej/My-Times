@@ -3,6 +3,7 @@ package com.tymoorejamal.mytimes;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,8 @@ public class ViewGoodTimes extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_good_times);
         displayLocation();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 
         Button back = findViewById(R.id.b_back);
         back.setOnClickListener(new View.OnClickListener() {
@@ -37,11 +40,12 @@ public class ViewGoodTimes extends AppCompatActivity {
 
             TextView lonText = findViewById(R.id.lon);
             lonText.setText(Double.toString(longitude));
+
         }
         else{
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
             alertDialog.setTitle("Location Missing");
-            alertDialog.setMessage("Please enable your location and restart My Times.");
+            alertDialog.setMessage("Please enable location permissions and restart My Times.");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
