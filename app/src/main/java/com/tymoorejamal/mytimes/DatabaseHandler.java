@@ -29,17 +29,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public DatabaseHandler(Context context) {
         super(context, DatabaseName, null, DatabaseVersion);
         database = getWritableDatabase();
+        onCreate(database);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(
-                "CREATE TABLE " + TableName + " ( " +
+                "CREATE TABLE IF NOT EXISTS " + TableName + " ( " +
                 ColumnID + " INTEGER PRIMARY KEY, " +
                 ColumnLat + " REAL, " +
                 ColumnLon + " REAL," +
                 ColumnRating + " INTEGER," +
-                ColumnTitle + " TEXT," +
+                ColumnTitle + " TEXT NOT NULL," +
                 ColumnDescription + " TEXT," +
                 ColumnStartTime + " TEXT," +
                 ColumnEndTime + " TEXT" +
@@ -78,20 +79,53 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void clearTable(){
         database.execSQL("DELETE FROM " + TableName);
     }
+    public void dropTable(){
+        database.execSQL("DROP TABLE IF EXISTS " + TableName);
+    }
+
 
     public int getRowCount(){
         int i = 0;
-        String[] columns = {DatabaseHandler.ColumnID, DatabaseHandler.ColumnLat, DatabaseHandler.ColumnLon};
+        String[] columns = {DatabaseHandler.ColumnID};
+        Cursor cursor = database.query(DatabaseHandler.TableName,columns,null,null,null,null,null);
+        while (cursor.moveToNext()) {
+            i++;
+        }
+        return i;
+    }
+
+    public int getLastInsertedRow(){
+        String[] columns = {DatabaseHandler.ColumnID};
+        Cursor cursor = database.query(DatabaseHandler.TableName,columns,DatabaseHandler.ColumnID,
+                null,null,null,DatabaseHandler.ColumnID + " DESC");
+        StringBuffer buffer= new StringBuffer();
+        if (cursor.moveToNext()) {
+            return cursor.getInt(cursor.getColumnIndex(DatabaseHandler.ColumnID));
+        }
+        else{
+            return -1;
+        }
+    }
+
+    public String getRows(){
+        String[] columns = {DatabaseHandler.ColumnID, DatabaseHandler.ColumnTitle,
+                DatabaseHandler.ColumnDescription, DatabaseHandler.ColumnRating,
+                DatabaseHandler.ColumnLat, DatabaseHandler.ColumnLon,
+                DatabaseHandler.ColumnStartTime, DatabaseHandler.ColumnEndTime};
         Cursor cursor = database.query(DatabaseHandler.TableName,columns,null,null,null,null,null);
         StringBuffer buffer= new StringBuffer();
         while (cursor.moveToNext()) {
-            i++;
-//            int cid =cursor.getInt(cursor.getColumnIndex(DatabaseHandler.ColumnID));
-//            String lat = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnLat));
-//            String lon =cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnLon));
-//            buffer.append(cid+ "   " + lat + "   " + lon +" \n");
+            int tid = cursor.getInt(cursor.getColumnIndex(DatabaseHandler.ColumnID));
+            String title = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnTitle));
+            String description = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnDescription));
+            int rating = cursor.getInt(cursor.getColumnIndex(DatabaseHandler.ColumnRating));
+            String lat = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnLat));
+            String lon = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnLon));
+            String stime = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnStartTime));
+            String etime = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnEndTime));
+            buffer.append(tid + ", " + title + ", " + description + ", " + rating +
+                    ", " + lat + ", " + lon + ", "+ stime + ", " + etime + ", " + " \n");
         }
-//        return buffer.toString();
-        return i;
+        return buffer.toString();
     }
 }
