@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context="com.tymoorejamal.mytimes.ViewGoodTimes">
 
+    <TextView
+        android:id="@+id/lon"
+        android:layout_width="246dp"
+        android:layout_height="33dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lat" />
+
     <Button
         android:id="@+id/b_back"
         android:layout_width="wrap_content"
@@ -18,19 +30,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.322" />
+        app:layout_constraintTop_toBottomOf="@+id/lon" />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="72dp"
-        android:layout_height="40dp"
+        android:id="@+id/lat"
+        android:layout_width="246dp"
+        android:layout_height="33dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="168dp"
-        android:text="TODO:"
+        android:layout_marginTop="60dp"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>
