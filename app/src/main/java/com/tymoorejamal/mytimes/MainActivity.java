@@ -70,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
         ((GlobalVariables) this.getApplication()).setCanUseLocation(true);
         LocationManager locMan = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         @SuppressLint("MissingPermission") Location location = locMan.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (location==null){
+            Log.d("testGeneral", "null location");
+            return;
+        }
         ((GlobalVariables) this.getApplication()).setLatitude(location.getLatitude());
         ((GlobalVariables) this.getApplication()).setLongitude(location.getLongitude());
     }
