@@ -49,8 +49,8 @@ public class AddGoodTime extends AppCompatActivity {
                 EditText title = findViewById(R.id.titleText);
                 EditText description = findViewById(R.id.descText);
                 RatingBar rating = findViewById(R.id.ratingBar);
-
-                if (title.getText() == null || title.getText().equals("") || title.getText().length() == 0) {
+                String titleText = title.getText().toString().replaceAll("\\s+", "");
+                if (titleText == null || titleText.equals("") || titleText.length() == 0) {
                     Toast toast = Toast.makeText(AddGoodTime.this, "Please add a Title", Toast.LENGTH_SHORT);
                     toast.show();
                     return;
@@ -65,7 +65,12 @@ public class AddGoodTime extends AppCompatActivity {
                 databaseHandler.insertRow(userLat, userLon, title.getText().toString(),
                         description.getText().toString(), (int) rating.getRating(),
                         formattedDate, formattedDate);
-                Log.d("InsertingData", Integer.toString(databaseHandler.getLastInsertedRow()));
+                Log.d("InsertingData", "Row Count: " + Integer.toString(databaseHandler.getRowCount()));
+                Log.d("InsertingData", "Last Inserted Row: " + Integer.toString(databaseHandler.getLastInsertedRow()));
+                String[] rows = databaseHandler.getRows();
+                for (int i =0; i<rows.length; i++){
+                    Log.d("InsertingData", rows[i]);
+                }
             }
         });
 

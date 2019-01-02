@@ -109,7 +109,7 @@
                 tools:layout_editor_absoluteY="97dp" />
 
             <EditText
-                android:id="@+id/editText34"
+                android:id="@+id/titleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -150,7 +150,7 @@
                 tools:layout_editor_absoluteY="285dp" />
 
             <EditText
-                android:id="@+id/editText3"
+                android:id="@+id/descText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -167,7 +167,7 @@
                 android:textSize="30sp" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/selectLocationButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Select On Map" />
@@ -182,7 +182,7 @@
                 android:textSize="30sp" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/stimeButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Choose Time" />
@@ -197,7 +197,7 @@
                 android:textSize="30sp" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/etimeButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Choose Time" />

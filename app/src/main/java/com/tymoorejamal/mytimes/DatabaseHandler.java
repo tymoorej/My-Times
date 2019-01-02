@@ -88,10 +88,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         int i = 0;
         String[] columns = {DatabaseHandler.ColumnID};
         Cursor cursor = database.query(DatabaseHandler.TableName,columns,null,null,null,null,null);
-        while (cursor.moveToNext()) {
-            i++;
-        }
-        return i;
+        return cursor.getCount();
     }
 
     public int getLastInsertedRow(){
@@ -107,13 +104,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    public String getRows(){
+    public String[] getRows(){
         String[] columns = {DatabaseHandler.ColumnID, DatabaseHandler.ColumnTitle,
                 DatabaseHandler.ColumnDescription, DatabaseHandler.ColumnRating,
                 DatabaseHandler.ColumnLat, DatabaseHandler.ColumnLon,
                 DatabaseHandler.ColumnStartTime, DatabaseHandler.ColumnEndTime};
         Cursor cursor = database.query(DatabaseHandler.TableName,columns,null,null,null,null,null);
-        StringBuffer buffer= new StringBuffer();
+        String[] rows = new String[cursor.getCount()];
+        int i = 0;
         while (cursor.moveToNext()) {
             int tid = cursor.getInt(cursor.getColumnIndex(DatabaseHandler.ColumnID));
             String title = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnTitle));
@@ -123,9 +121,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             String lon = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnLon));
             String stime = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnStartTime));
             String etime = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnEndTime));
-            buffer.append(tid + ", " + title + ", " + description + ", " + rating +
-                    ", " + lat + ", " + lon + ", "+ stime + ", " + etime + ", " + " \n");
+            rows[i] = tid + ", " + title + ", " + description + ", " + rating + ", " + lat + ", " + lon + ", " + stime + ", " + etime;
+            i++;
         }
-        return buffer.toString();
+        return rows;
     }
 }

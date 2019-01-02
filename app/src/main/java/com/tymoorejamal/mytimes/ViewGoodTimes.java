@@ -16,9 +16,8 @@ public class ViewGoodTimes extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_good_times);
-        displayLocation();
+        checkLocationPermission();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
 
         Button back = findViewById(R.id.b_back);
         back.setOnClickListener(new View.OnClickListener() {
@@ -28,21 +27,12 @@ public class ViewGoodTimes extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
     }
 
-    private void displayLocation(){
-        if(((GlobalVariables) this.getApplication()).getCanUseLocation()){
-            double latitude = ((GlobalVariables) this.getApplication()).getLatitude();
-            double longitude = ((GlobalVariables) this.getApplication()).getLongitude();
-
-            TextView latText = findViewById(R.id.lat);
-            latText.setText(Double.toString(latitude));
-
-            TextView lonText = findViewById(R.id.lon);
-            lonText.setText(Double.toString(longitude));
-
-        }
-        else{
+    private void checkLocationPermission(){
+        if(!((GlobalVariables) this.getApplication()).getCanUseLocation()){
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
             alertDialog.setTitle("Location Missing");
             alertDialog.setMessage("Please enable location permissions and restart My Times.");
