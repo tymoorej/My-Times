@@ -48,6 +48,7 @@ public class ViewGoodTimes extends AppCompatActivity {
                             startActivity(intent);
                         }
                     });
+
             alertDialog.show();
         }
     }
@@ -62,6 +63,5 @@ public class ViewGoodTimes extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
-
 
 }

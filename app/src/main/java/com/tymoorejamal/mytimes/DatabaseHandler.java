@@ -106,6 +106,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
+    public void removeRow(int tid){
+        database.execSQL("DELETE FROM " + TableName + " WHERE " + ColumnID + " IS " + Integer.toString(tid));
+    }
+
     public ArrayList<GoodTime> getRows(){
         String[] columns = {DatabaseHandler.ColumnID, DatabaseHandler.ColumnTitle,
                 DatabaseHandler.ColumnDescription, DatabaseHandler.ColumnRating,
