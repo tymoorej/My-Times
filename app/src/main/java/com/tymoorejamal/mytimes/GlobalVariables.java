@@ -4,6 +4,7 @@ import android.app.Application;
 
 public class GlobalVariables extends Application {
     private boolean canUseLocation = false;
+    private boolean canUseExternalStorage = false;
     private double latitude = 0;
     private double longitude = 0;
 
@@ -29,5 +30,13 @@ public class GlobalVariables extends Application {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public boolean getCanUseExternalStorage() {
+        return canUseExternalStorage;
+    }
+
+    public void setCanUseExternalStorage(boolean canUseExternalStorage) {
+        this.canUseExternalStorage = canUseExternalStorage;
     }
 }

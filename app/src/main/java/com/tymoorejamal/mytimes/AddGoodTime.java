@@ -2,6 +2,7 @@ package com.tymoorejamal.mytimes;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -39,6 +40,7 @@ public class AddGoodTime extends AppCompatActivity {
 
     double userLat;
     double userLon;
+    Uri imageUri;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_LOAD_IMG = 2;
@@ -50,6 +52,7 @@ public class AddGoodTime extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_good_time);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        checkPermissions();
         getUserLocation();
 
         Button back = findViewById(R.id.b_back);
@@ -202,15 +205,16 @@ public class AddGoodTime extends AppCompatActivity {
         addPictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                }
-                else{
-                    Toast toast = Toast.makeText(AddGoodTime.this, "Error Adding Image", Toast.LENGTH_SHORT);
-                    toast.show();
-                    return;
-                }
+
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE, "New Picture");
+                values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+                imageUri = getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
 
             }
         });
@@ -232,13 +236,26 @@ public class AddGoodTime extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte imageInByte[] = stream.toByteArray();
-            images.add(imageInByte);
-            initRecyclerView();
+            try {
+                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(
+                        getContentResolver(), imageUri);
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+                Matrix matrix = new Matrix();
+                matrix.postRotate(90);
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(imageBitmap, imageBitmap.getWidth(), imageBitmap.getHeight(), true);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+
+
+                rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte imageInByte[] = stream.toByteArray();
+                images.add(imageInByte);
+                initRecyclerView();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         else if (requestCode == REQUEST_LOAD_IMG && resultCode == RESULT_OK){
             Uri imageUri = data.getData();
@@ -269,15 +286,14 @@ public class AddGoodTime extends AppCompatActivity {
 
 
 
-    private void getUserLocation(){
-        if(((GlobalVariables) this.getApplication()).getCanUseLocation()){
-            this.userLat = ((GlobalVariables) this.getApplication()).getLatitude();
-            this.userLon = ((GlobalVariables) this.getApplication()).getLongitude();
+    private void checkPermissions(){
+        if(((GlobalVariables) this.getApplication()).getCanUseLocation() && ((GlobalVariables) this.getApplication()).getCanUseExternalStorage()) {
+            return;
         }
         else{
             android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(this).create();
-            alertDialog.setTitle("Location Missing");
-            alertDialog.setMessage("Please enable location permissions and restart My Times.");
+            alertDialog.setTitle("Permissions Missing");
+            alertDialog.setMessage("Please enable all permissions and restart My Times.");
             alertDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -287,7 +303,19 @@ public class AddGoodTime extends AppCompatActivity {
                         }
                     });
             alertDialog.show();
+            alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    Intent intent = new Intent(AddGoodTime.this, MainActivity.class);
+                    startActivity(intent);
+                }
+            });
         }
+    }
+
+    private void getUserLocation(){
+        this.userLat = ((GlobalVariables) this.getApplication()).getLatitude();
+        this.userLon = ((GlobalVariables) this.getApplication()).getLongitude();
     }
 
     private void initRecyclerView(){

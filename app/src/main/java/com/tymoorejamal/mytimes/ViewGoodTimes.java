@@ -20,7 +20,7 @@ public class ViewGoodTimes extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_good_times);
-        checkLocationPermission();
+        checkPermissions();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         Button back = findViewById(R.id.b_back);
@@ -35,11 +35,11 @@ public class ViewGoodTimes extends AppCompatActivity {
         initRecyclerView();
     }
 
-    private void checkLocationPermission(){
-        if(!((GlobalVariables) this.getApplication()).getCanUseLocation()){
+    private void checkPermissions(){
+        if(!((GlobalVariables) this.getApplication()).getCanUseLocation() || !((GlobalVariables) this.getApplication()).getCanUseExternalStorage()){
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-            alertDialog.setTitle("Location Missing");
-            alertDialog.setMessage("Please enable location permissions and restart My Times.");
+            alertDialog.setTitle("Permissions Missing");
+            alertDialog.setMessage("Please enable all permissions and restart My Times.");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -50,6 +50,13 @@ public class ViewGoodTimes extends AppCompatActivity {
                     });
 
             alertDialog.show();
+            alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    Intent intent = new Intent(ViewGoodTimes.this, MainActivity.class);
+                    startActivity(intent);
+                }
+            });
         }
     }
 

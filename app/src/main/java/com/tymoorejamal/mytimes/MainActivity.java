@@ -13,20 +13,20 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
     static final int fineLocationPermission = 1;
     static final int courseLocationPermission = 2;
+    static final int externalStortagePermission = 3;
+    static final int multiplePermissions = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        requestLocationPermissions();
+        requestPermissions();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         Button switchButton1 = findViewById(R.id.b_viewgoodtimes);
@@ -50,7 +50,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void requestLocationPermissions(){
+    private void requestPermissions(){
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    multiplePermissions);
+        }
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -60,14 +67,21 @@ public class MainActivity extends AppCompatActivity {
                     courseLocationPermission);
         }
         else{
-
+            ((GlobalVariables) this.getApplication()).setCanUseLocation(true);
             getLocation();
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},externalStortagePermission
+                    );
+        }
+        else{
+            ((GlobalVariables) this.getApplication()).setCanUseExternalStorage(true);
         }
     }
 
 
     private void getLocation(){
-        ((GlobalVariables) this.getApplication()).setCanUseLocation(true);
         LocationManager locMan = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         @SuppressLint("MissingPermission") Location location = locMan.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (location==null){
@@ -88,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
+                    ((GlobalVariables) this.getApplication()).setCanUseLocation(true);
                     getLocation();
 
                 } else {
@@ -103,10 +118,55 @@ public class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
+                    ((GlobalVariables) this.getApplication()).setCanUseLocation(true);
                     getLocation();
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
+                    ((GlobalVariables) this.getApplication()).setCanUseLocation(false);
+                }
+                return;
+            }
+            case externalStortagePermission: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    ((GlobalVariables) this.getApplication()).setCanUseExternalStorage(true);
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    ((GlobalVariables) this.getApplication()).setCanUseExternalStorage(false);
+                }
+                return;
+            }
+
+            case multiplePermissions: {
+                Log.d("testGeneral", "checked");
+                Log.d("testGeneral", Integer.toString(grantResults.length));
+                // If request is cancelled, the result arrays are empty.
+
+                boolean goodToGo = true;
+
+                for (int i = 0; i<grantResults.length; i++){
+                    if (grantResults[i] != PackageManager.PERMISSION_GRANTED){
+                        goodToGo = false;
+                    }
+                }
+
+                if (goodToGo) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    ((GlobalVariables) this.getApplication()).setCanUseExternalStorage(true);
+                    ((GlobalVariables) this.getApplication()).setCanUseLocation(true);
+                    getLocation();
+                    Log.d("testGeneral", "true");
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Log.d("testGeneral", "false");
+                    ((GlobalVariables) this.getApplication()).setCanUseExternalStorage(false);
                     ((GlobalVariables) this.getApplication()).setCanUseLocation(false);
                 }
                 return;
