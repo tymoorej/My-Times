@@ -1,6 +1,7 @@
 package com.tymoorejamal.mytimes;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -13,12 +14,14 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
 
 public class AddGoodTime extends AppCompatActivity {
 
@@ -28,6 +31,7 @@ public class AddGoodTime extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("testwidget","In onCreate" );
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_good_time);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -59,7 +63,7 @@ public class AddGoodTime extends AppCompatActivity {
                 Date date = new Date();
                 String strDateFormat = "yyyy-MM-dd hh:mm";
                 DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
-                String formattedDate= dateFormat.format(date);
+                String formattedDate = dateFormat.format(date);
 
                 DatabaseHandler databaseHandler = new DatabaseHandler(AddGoodTime.this);
                 databaseHandler.insertRow(userLat, userLon, title.getText().toString(),
@@ -68,13 +72,93 @@ public class AddGoodTime extends AppCompatActivity {
                 Log.d("InsertingData", "Row Count: " + Integer.toString(databaseHandler.getRowCount()));
                 Log.d("InsertingData", "Last Inserted Row: " + Integer.toString(databaseHandler.getLastInsertedRow()));
                 String[] rows = databaseHandler.getRows();
-                for (int i =0; i<rows.length; i++){
+                for (int i = 0; i < rows.length; i++) {
                     Log.d("InsertingData", rows[i]);
                 }
             }
         });
 
+
+        Button sTime = findViewById(R.id.stimeButton);
+        sTime.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Calendar datecalendar = Calendar.getInstance();
+                int day = datecalendar.get(Calendar.DAY_OF_MONTH);
+                int month = datecalendar.get(Calendar.MONTH);
+                int year = datecalendar.get(Calendar.YEAR);
+                DatePickerDialog datepicker = new DatePickerDialog( AddGoodTime.this, new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker datepicker, int mYear, int mMonth, int mDay){
+                        Button sTime = findViewById(R.id.stimeButton);
+                        sTime.setText(mYear + "-" + (mMonth + 1) + "-" + mDay);
+
+                        Calendar datecalendar = Calendar.getInstance();
+                        int hour = datecalendar.get(Calendar.HOUR_OF_DAY);
+                        int minute = datecalendar.get(Calendar.MINUTE);
+
+                        TimePickerDialog timepicker = new TimePickerDialog(AddGoodTime.this, new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int mhour, int mminute) {
+                                Button sTime = findViewById(R.id.stimeButton);
+                                sTime.setText( sTime.getText() + " " + mhour + ":" + mminute);
+                            }
+                        },hour, minute, false);
+                        timepicker.show();
+                    }
+
+                }, year, month, day);
+
+                datepicker.show();
+            }
+        });
+
+
+
+
+
+        Button eTime = findViewById(R.id.etimeButton);
+        eTime.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Calendar datecalendar = Calendar.getInstance();
+                int day = datecalendar.get(Calendar.DAY_OF_MONTH);
+                int month = datecalendar.get(Calendar.MONTH);
+                int year = datecalendar.get(Calendar.YEAR);
+                DatePickerDialog datepicker = new DatePickerDialog( AddGoodTime.this, new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker datepicker, int mYear, int mMonth, int mDay){
+                        Button eTime = findViewById(R.id.etimeButton);
+                        eTime.setText(mYear + "-" + (mMonth + 1) + "-" + mDay);
+
+                        Calendar datecalendar = Calendar.getInstance();
+                        int hour = datecalendar.get(Calendar.HOUR_OF_DAY);
+                        int minute = datecalendar.get(Calendar.MINUTE);
+
+                        TimePickerDialog timepicker = new TimePickerDialog(AddGoodTime.this, new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int mhour, int mminute) {
+                                Button eTime = findViewById(R.id.etimeButton);
+                                eTime.setText( eTime.getText() + " " + mhour + ":" + mminute);
+                            }
+                        },hour, minute, false);
+                        timepicker.show();
+                    }
+
+                }, year, month, day);
+
+                datepicker.show();
+            }
+        });
+
+
     }
+
+
 
 
     private void getUserLocation(){
