@@ -199,6 +199,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Choose Time" />
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/rye"
+                android:text="Pictures:"
+                android:textAlignment="center"
+                android:textSize="30sp" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/image_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                app:layout_constraintBottom_toTopOf="@+id/b_back"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <Button
+                android:id="@+id/addpicture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add Picture" />
 
         </LinearLayout>
     </ScrollView>

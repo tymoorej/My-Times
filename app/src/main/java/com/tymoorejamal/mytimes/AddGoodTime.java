@@ -5,18 +5,25 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,6 +36,8 @@ public class AddGoodTime extends AppCompatActivity {
     double userLat;
     double userLon;
 
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    ArrayList<byte[]> images = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,9 +192,39 @@ public class AddGoodTime extends AppCompatActivity {
             }
         });
 
+        Button addPictureButton = findViewById(R.id.addpicture);
+
+        addPictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }
+                else{
+                    Toast toast = Toast.makeText(AddGoodTime.this, "Error Adding Image", Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+
+            }
+        });
+
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte imageInByte[] = stream.toByteArray();
+            images.add(imageInByte);
+            initRecyclerView();
+        }
+    }
 
 
 
@@ -208,6 +247,14 @@ public class AddGoodTime extends AppCompatActivity {
                     });
             alertDialog.show();
         }
+    }
+
+    private void initRecyclerView(){
+        RecyclerView recyclerView = findViewById(R.id.image_recyclerview);
+        ImageRecyclerAdapter adapter = new ImageRecyclerAdapter(this,images);
+        recyclerView.setAdapter(adapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
     }
 
 }
