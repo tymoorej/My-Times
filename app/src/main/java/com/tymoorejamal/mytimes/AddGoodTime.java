@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -48,33 +49,68 @@ public class AddGoodTime extends AppCompatActivity {
 
         Button add = findViewById(R.id.b_add);
         add.setOnClickListener(new View.OnClickListener() {
+
+            private void goBack(){
+                Intent intent = new Intent(AddGoodTime.this, MainActivity.class);
+                startActivity(intent);
+            }
+
+            private void displaySuccessMessage(){
+                Toast toast = Toast.makeText(AddGoodTime.this, "Successfully Added!", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+
+            private void logInsertion(DatabaseHandler databaseHandler){
+                Log.d("InsertingData", "Row Count: " + Integer.toString(databaseHandler.getRowCount()));
+                Log.d("InsertingData", "Last Inserted Row: " + Integer.toString(databaseHandler.getLastInsertedRow()));
+                ArrayList<GoodTime> rows = databaseHandler.getRows();
+                for (int i =0; i<rows.size(); i++){
+                    Log.d("InsertingData", rows.get(i).toString());
+                }
+            }
+
+            private boolean checkValidTitle(String titleText){
+                if (titleText == null || titleText.equals("") || titleText.length() == 0) {
+                    Toast toast = Toast.makeText(AddGoodTime.this, "Please add a Title", Toast.LENGTH_SHORT);
+                    toast.show();
+                    return false;
+                }
+                else{
+                    return true;
+                }
+            }
+
+            private String getFormattedDate(){
+                Date date = new Date();
+                String strDateFormat = "yyyy-MM-dd hh:mm";
+                DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+                String formattedDate = dateFormat.format(date);
+                return formattedDate;
+            }
+
+            private void insertDataToDB(DatabaseHandler databaseHandler,EditText title,EditText description, RatingBar rating, String formattedDate){
+                databaseHandler.insertRow(userLat, userLon, title.getText().toString(),
+                        description.getText().toString(), (int) rating.getRating(),
+                        formattedDate, formattedDate);
+            }
+
             @Override
             public void onClick(View view) {
                 EditText title = findViewById(R.id.titleText);
                 EditText description = findViewById(R.id.descText);
                 RatingBar rating = findViewById(R.id.ratingBar);
                 String titleText = title.getText().toString().replaceAll("\\s+", "");
-                if (titleText == null || titleText.equals("") || titleText.length() == 0) {
-                    Toast toast = Toast.makeText(AddGoodTime.this, "Please add a Title", Toast.LENGTH_SHORT);
-                    toast.show();
+                if(checkValidTitle(titleText) == false){
                     return;
                 }
 
-                Date date = new Date();
-                String strDateFormat = "yyyy-MM-dd hh:mm";
-                DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
-                String formattedDate = dateFormat.format(date);
+                String formattedDate = getFormattedDate();
 
                 DatabaseHandler databaseHandler = new DatabaseHandler(AddGoodTime.this);
-                databaseHandler.insertRow(userLat, userLon, title.getText().toString(),
-                        description.getText().toString(), (int) rating.getRating(),
-                        formattedDate, formattedDate);
-                Log.d("InsertingData", "Row Count: " + Integer.toString(databaseHandler.getRowCount()));
-                Log.d("InsertingData", "Last Inserted Row: " + Integer.toString(databaseHandler.getLastInsertedRow()));
-                String[] rows = databaseHandler.getRows();
-                for (int i = 0; i < rows.length; i++) {
-                    Log.d("InsertingData", rows[i]);
-                }
+                insertDataToDB(databaseHandler, title, description, rating, formattedDate);
+                logInsertion(databaseHandler);
+                goBack();
+                displaySuccessMessage();
             }
         });
 

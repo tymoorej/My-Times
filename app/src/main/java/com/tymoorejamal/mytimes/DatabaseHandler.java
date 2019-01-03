@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -104,26 +106,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    public String[] getRows(){
+    public void removeRow(int tid){
+        database.execSQL("DELETE FROM " + TableName + " WHERE " + ColumnID + " IS " + Integer.toString(tid));
+    }
+
+    public ArrayList<GoodTime> getRows(){
         String[] columns = {DatabaseHandler.ColumnID, DatabaseHandler.ColumnTitle,
                 DatabaseHandler.ColumnDescription, DatabaseHandler.ColumnRating,
                 DatabaseHandler.ColumnLat, DatabaseHandler.ColumnLon,
                 DatabaseHandler.ColumnStartTime, DatabaseHandler.ColumnEndTime};
         Cursor cursor = database.query(DatabaseHandler.TableName,columns,null,null,null,null,null);
-        String[] rows = new String[cursor.getCount()];
-        int i = 0;
+        ArrayList<GoodTime> goodTimes= new ArrayList<>();
         while (cursor.moveToNext()) {
             int tid = cursor.getInt(cursor.getColumnIndex(DatabaseHandler.ColumnID));
             String title = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnTitle));
             String description = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnDescription));
             int rating = cursor.getInt(cursor.getColumnIndex(DatabaseHandler.ColumnRating));
-            String lat = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnLat));
-            String lon = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnLon));
+            double lat = cursor.getDouble(cursor.getColumnIndex(DatabaseHandler.ColumnLat));
+            double lon = cursor.getDouble(cursor.getColumnIndex(DatabaseHandler.ColumnLon));
             String stime = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnStartTime));
             String etime = cursor.getString(cursor.getColumnIndex(DatabaseHandler.ColumnEndTime));
-            rows[i] = tid + ", " + title + ", " + description + ", " + rating + ", " + lat + ", " + lon + ", " + stime + ", " + etime;
-            i++;
+            GoodTime goodTime = new GoodTime(tid, title, description, rating, lat, lon, stime, etime);
+            goodTimes.add(goodTime);
         }
-        return rows;
+        return goodTimes;
     }
 }

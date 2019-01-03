@@ -6,9 +6,13 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class ViewGoodTimes extends AppCompatActivity {
 
@@ -28,7 +32,7 @@ public class ViewGoodTimes extends AppCompatActivity {
             }
         });
 
-
+        initRecyclerView();
     }
 
     private void checkLocationPermission(){
@@ -44,9 +48,20 @@ public class ViewGoodTimes extends AppCompatActivity {
                             startActivity(intent);
                         }
                     });
+
             alertDialog.show();
         }
     }
 
+    private void initRecyclerView(){
+        RecyclerView recyclerView = findViewById(R.id.view_recylerview);
+
+        DatabaseHandler databaseHandler = new DatabaseHandler(ViewGoodTimes.this);
+        ArrayList<GoodTime> goodTimes = databaseHandler.getRows();
+
+        ViewGoodTimeRecyclerViewAdapter adapter = new ViewGoodTimeRecyclerViewAdapter(this,goodTimes);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
 
 }
