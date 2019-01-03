@@ -80,18 +80,10 @@ public class AddGoodTime extends AppCompatActivity {
                 }
             }
 
-            private String getFormattedDate(){
-                Date date = new Date();
-                String strDateFormat = "yyyy-MM-dd hh:mm";
-                DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
-                String formattedDate = dateFormat.format(date);
-                return formattedDate;
-            }
-
-            private void insertDataToDB(DatabaseHandler databaseHandler,EditText title,EditText description, RatingBar rating, String formattedDate){
+            private void insertDataToDB(DatabaseHandler databaseHandler,EditText title,EditText description, RatingBar rating, String stime, String etime){
                 databaseHandler.insertRow(userLat, userLon, title.getText().toString(),
                         description.getText().toString(), (int) rating.getRating(),
-                        formattedDate, formattedDate);
+                        stime, etime);
             }
 
             @Override
@@ -99,15 +91,15 @@ public class AddGoodTime extends AppCompatActivity {
                 EditText title = findViewById(R.id.titleText);
                 EditText description = findViewById(R.id.descText);
                 RatingBar rating = findViewById(R.id.ratingBar);
+                Button stime = findViewById(R.id.stimeButton);
+                Button etime = findViewById(R.id.etimeButton);
                 String titleText = title.getText().toString().replaceAll("\\s+", "");
                 if(checkValidTitle(titleText) == false){
                     return;
                 }
 
-                String formattedDate = getFormattedDate();
-
                 DatabaseHandler databaseHandler = new DatabaseHandler(AddGoodTime.this);
-                insertDataToDB(databaseHandler, title, description, rating, formattedDate);
+                insertDataToDB(databaseHandler, title, description, rating, stime.getText().toString(), etime.getText().toString());
                 logInsertion(databaseHandler);
                 goBack();
                 displaySuccessMessage();
