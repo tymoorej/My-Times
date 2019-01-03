@@ -143,8 +143,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             case multiplePermissions: {
-                Log.d("testGeneral", "checked");
-                Log.d("testGeneral", Integer.toString(grantResults.length));
                 // If request is cancelled, the result arrays are empty.
 
                 boolean goodToGo = true;
@@ -161,11 +159,11 @@ public class MainActivity extends AppCompatActivity {
                     ((GlobalVariables) this.getApplication()).setCanUseExternalStorage(true);
                     ((GlobalVariables) this.getApplication()).setCanUseLocation(true);
                     getLocation();
-                    Log.d("testGeneral", "true");
+
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Log.d("testGeneral", "false");
+
                     ((GlobalVariables) this.getApplication()).setCanUseExternalStorage(false);
                     ((GlobalVariables) this.getApplication()).setCanUseLocation(false);
                 }
