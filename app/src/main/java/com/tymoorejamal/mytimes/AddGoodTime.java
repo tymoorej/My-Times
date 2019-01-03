@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +26,8 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,6 +41,7 @@ public class AddGoodTime extends AppCompatActivity {
     double userLon;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int REQUEST_LOAD_IMG = 2;
     ArrayList<byte[]> images = new ArrayList<>();
 
     @Override
@@ -210,6 +215,17 @@ public class AddGoodTime extends AppCompatActivity {
             }
         });
 
+        Button choosePictureButton = findViewById(R.id.chosepicture);
+
+        choosePictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(photoPickerIntent, REQUEST_LOAD_IMG);
+            }
+        });
+
 
     }
 
@@ -220,6 +236,31 @@ public class AddGoodTime extends AppCompatActivity {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte imageInByte[] = stream.toByteArray();
+            images.add(imageInByte);
+            initRecyclerView();
+        }
+        else if (requestCode == REQUEST_LOAD_IMG && resultCode == RESULT_OK){
+            Uri imageUri = data.getData();
+            InputStream imageStream = null;
+            try {
+                imageStream = getContentResolver().openInputStream(imageUri);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Toast toast = Toast.makeText(AddGoodTime.this, "Something went wrong!", Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }
+            Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+
+            Matrix matrix = new Matrix();
+            matrix.postRotate(90);
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(selectedImage, selectedImage.getWidth(), selectedImage.getHeight(), true);
+            Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
             byte imageInByte[] = stream.toByteArray();
             images.add(imageInByte);
             initRecyclerView();

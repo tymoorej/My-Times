@@ -235,7 +235,6 @@
                     android:layout_height="wrap_content"
                     android:text="Choose Photo" />
             </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
 
