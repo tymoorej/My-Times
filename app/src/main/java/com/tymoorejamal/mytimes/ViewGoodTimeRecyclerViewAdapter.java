@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +37,7 @@ public class ViewGoodTimeRecyclerViewAdapter extends RecyclerView.Adapter<ViewGo
         holder.itemTitle.setText(goodTimes.get(position).getTitle());
         holder.itemRating.setText(Integer.toString(goodTimes.get(position).getRating()));
         holder.itemDescription.setText(goodTimes.get(position).getDescription());
-        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DatabaseHandler databaseHandler = new DatabaseHandler(mContext);
@@ -63,6 +64,7 @@ public class ViewGoodTimeRecyclerViewAdapter extends RecyclerView.Adapter<ViewGo
         TextView itemRating;
         TextView itemDescription;
         ConstraintLayout parentLayout;
+        ImageButton deleteButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -70,7 +72,7 @@ public class ViewGoodTimeRecyclerViewAdapter extends RecyclerView.Adapter<ViewGo
             itemRating = itemView.findViewById(R.id.item_rating);
             itemDescription = itemView.findViewById(R.id.item_description);
             parentLayout = itemView.findViewById(R.id.parent_layout);
-
+            deleteButton = itemView.findViewById(R.id.delete_good_time);
         }
     }
 }
