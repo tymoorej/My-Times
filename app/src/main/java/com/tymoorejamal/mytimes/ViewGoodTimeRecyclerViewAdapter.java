@@ -2,7 +2,6 @@ package com.tymoorejamal.mytimes;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +38,7 @@ public class ViewGoodTimeRecyclerViewAdapter extends RecyclerView.Adapter<ViewGo
             @Override
             public void onClick(View view) {
                 DatabaseHandler databaseHandler = new DatabaseHandler(mContext);
-                databaseHandler.removeRow(goodTimes.get(position).getTid());
+                databaseHandler.TimesRemoveRow(goodTimes.get(position).getTid());
 
                 Toast toast = Toast.makeText(mContext, "Removed: " + goodTimes.get(position).getTitle(), Toast.LENGTH_SHORT);
                 toast.show();

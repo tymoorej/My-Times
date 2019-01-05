@@ -11,17 +11,16 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -29,11 +28,8 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 
 public class AddGoodTime extends AppCompatActivity {
@@ -78,9 +74,9 @@ public class AddGoodTime extends AppCompatActivity {
             }
 
             private void logInsertion(DatabaseHandler databaseHandler){
-                Log.d("InsertingData", "Row Count: " + Integer.toString(databaseHandler.getRowCount()));
-                Log.d("InsertingData", "Last Inserted Row: " + Integer.toString(databaseHandler.getLastInsertedRow()));
-                ArrayList<GoodTime> rows = databaseHandler.getRows();
+                Log.d("InsertingData", "Row Count: " + Integer.toString(databaseHandler.TimesGetRowCount()));
+                Log.d("InsertingData", "Last Inserted Row: " + Integer.toString(databaseHandler.TimesGetLastInsertedRow()));
+                ArrayList<GoodTime> rows = databaseHandler.TimesGetRows();
                 for (int i =0; i<rows.size(); i++){
                     Log.d("InsertingData", rows.get(i).toString());
                 }
@@ -97,10 +93,16 @@ public class AddGoodTime extends AppCompatActivity {
                 }
             }
 
-            private void insertDataToDB(DatabaseHandler databaseHandler,EditText title,EditText description, RatingBar rating, String stime, String etime){
-                databaseHandler.insertRow(userLat, userLon, title.getText().toString(),
+            private void insertTime(DatabaseHandler databaseHandler, EditText title, EditText description, RatingBar rating, String stime, String etime){
+                databaseHandler.TimesInsertRow(userLat, userLon, title.getText().toString(),
                         description.getText().toString(), (int) rating.getRating(),
                         stime, etime);
+            }
+
+            private void insertImages(DatabaseHandler databaseHandler, int tid){
+                for (int i=0; i<images.size(); i++){
+                    databaseHandler.ImagesInsertRow(tid,AddGoodTime.byteToString(images.get(i)));
+                }
             }
 
             @Override
@@ -116,7 +118,8 @@ public class AddGoodTime extends AppCompatActivity {
                 }
 
                 DatabaseHandler databaseHandler = new DatabaseHandler(AddGoodTime.this);
-                insertDataToDB(databaseHandler, title, description, rating, stime.getText().toString(), etime.getText().toString());
+                insertTime(databaseHandler, title, description, rating, stime.getText().toString(), etime.getText().toString());
+                insertImages(databaseHandler, databaseHandler.TimesGetLastInsertedRow());
                 logInsertion(databaseHandler);
                 goBack();
                 displaySuccessMessage();
@@ -279,6 +282,7 @@ public class AddGoodTime extends AppCompatActivity {
             rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
 
             byte imageInByte[] = stream.toByteArray();
+
             images.add(imageInByte);
             initRecyclerView();
         }
@@ -324,6 +328,10 @@ public class AddGoodTime extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
+    }
+
+    private static String byteToString(byte[] b){
+        return Base64.encodeToString(b, Base64.NO_WRAP);
     }
 
 }
