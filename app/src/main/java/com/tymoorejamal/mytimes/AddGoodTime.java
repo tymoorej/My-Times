@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.Image;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TimePicker;
@@ -48,23 +50,24 @@ public class AddGoodTime extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("testwidget","In onCreate" );
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_good_time);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         checkPermissions();
         getUserLocation();
 
-        Button back = findViewById(R.id.b_back);
+        ImageButton back = findViewById(R.id.back_from_addgt);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("testGeneral", "inside back listener");
                 Intent intent = new Intent(AddGoodTime.this, MainActivity.class);
                 startActivity(intent);
             }
         });
 
-        Button add = findViewById(R.id.b_add);
+
+        ImageButton add = findViewById(R.id.b_add);
         add.setOnClickListener(new View.OnClickListener() {
 
             private void goBack(){

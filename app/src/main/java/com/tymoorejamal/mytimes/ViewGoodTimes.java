@@ -8,8 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,10 +25,11 @@ public class ViewGoodTimes extends AppCompatActivity {
         checkPermissions();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        Button back = findViewById(R.id.b_back);
+        ImageButton back = findViewById(R.id.back_from_gtlist);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("testGeneral", "inside back listener");
                 Intent intent = new Intent(ViewGoodTimes.this, MainActivity.class);
                 startActivity(intent);
             }
