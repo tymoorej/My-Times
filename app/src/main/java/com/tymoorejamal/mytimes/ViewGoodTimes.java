@@ -67,7 +67,12 @@ public class ViewGoodTimes extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.view_recylerview);
 
         DatabaseHandler databaseHandler = new DatabaseHandler(ViewGoodTimes.this);
-        ArrayList<GoodTime> goodTimes = databaseHandler.getRows();
+        ArrayList<GoodTime> goodTimes = databaseHandler.TimesGetRows();
+
+        for (GoodTime g : goodTimes){
+            Log.d("testGeneral", g.toString());
+            databaseHandler.ImagesGetImages(g.getTid());
+        }
 
         ViewGoodTimeRecyclerViewAdapter adapter = new ViewGoodTimeRecyclerViewAdapter(this,goodTimes);
         recyclerView.setAdapter(adapter);

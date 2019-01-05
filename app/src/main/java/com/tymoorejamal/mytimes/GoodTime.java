@@ -1,5 +1,7 @@
 package com.tymoorejamal.mytimes;
 
+import java.util.ArrayList;
+
 public class GoodTime {
     private int tid;
     private String title;
@@ -9,9 +11,10 @@ public class GoodTime {
     private double longitude;
     private String stime;
     private String etime;
+    private ArrayList<byte[]> images;
 
-    public GoodTime(int db_tid, String title, String description, int rating, double latitude, double longitude, String stime, String etime) {
-        this.tid = db_tid;
+    public GoodTime(int tid, String title, String description, int rating, double latitude, double longitude, String stime, String etime, ArrayList<byte[]> images) {
+        this.tid = tid;
         this.title = title;
         this.description = description;
         this.rating = rating;
@@ -19,6 +22,7 @@ public class GoodTime {
         this.longitude = longitude;
         this.stime = stime;
         this.etime = etime;
+        this.images = images;
     }
 
     public int getTid() {
@@ -85,8 +89,16 @@ public class GoodTime {
         this.etime = etime;
     }
 
+    public ArrayList<byte[]> getImages() {
+        return images;
+    }
+
+    public void setImages(ArrayList<byte[]> images) {
+        this.images = images;
+    }
+
     @Override
     public String toString() {
-        return this.tid + ", " + title + ", " + description + ", " + rating + ", " + latitude + ", " + longitude + ", " + stime + ", " + etime;
+        return this.tid + ", " + title + ", " + description + ", " + rating + ", " + latitude + ", " + longitude + ", " + stime + ", " + etime +". Number of Images: " + images.size();
     }
 }
