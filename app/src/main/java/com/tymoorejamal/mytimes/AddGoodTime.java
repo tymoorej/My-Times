@@ -99,7 +99,7 @@ public class AddGoodTime extends AppCompatActivity {
             private boolean checkValidTimes(String stimeText, String etimeText){
                 boolean stimeValid= Pattern.compile("[0-9]+-[0-9]+-[0-9]+ [0-9]+:[0-9]+").matcher(stimeText).matches();
                 boolean etimeValid= Pattern.compile("[0-9]+-[0-9]+-[0-9]+ [0-9]+:[0-9]+").matcher(etimeText).matches();
-                return stimeValid && etimeValid && stimeText.compareTo(etimeText) <= 0;
+                return stimeValid && etimeValid;
             }
 
             private boolean checkValidLocation(String locationText){
