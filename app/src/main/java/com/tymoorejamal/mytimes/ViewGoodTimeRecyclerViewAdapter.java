@@ -1,10 +1,12 @@
 package com.tymoorejamal.mytimes;
 
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +36,7 @@ public class ViewGoodTimeRecyclerViewAdapter extends RecyclerView.Adapter<ViewGo
         holder.itemTitle.setText(goodTimes.get(position).getTitle());
         holder.itemRating.setText(Integer.toString(goodTimes.get(position).getRating()));
         holder.itemDescription.setText(goodTimes.get(position).getDescription());
-        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DatabaseHandler databaseHandler = new DatabaseHandler(mContext);
@@ -60,15 +62,16 @@ public class ViewGoodTimeRecyclerViewAdapter extends RecyclerView.Adapter<ViewGo
         TextView itemTitle;
         TextView itemRating;
         TextView itemDescription;
-        RelativeLayout parentLayout;
+        ConstraintLayout parentLayout;
+        ImageButton deleteButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
             itemTitle = itemView.findViewById(R.id.item_title);
             itemRating = itemView.findViewById(R.id.item_rating);
-            itemDescription = itemView.findViewById(R.id.item_decription);
+            itemDescription = itemView.findViewById(R.id.item_description);
             parentLayout = itemView.findViewById(R.id.parent_layout);
-
+            deleteButton = itemView.findViewById(R.id.delete_good_time);
         }
     }
 }
