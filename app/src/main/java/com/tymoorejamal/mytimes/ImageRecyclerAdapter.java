@@ -3,6 +3,7 @@ package com.tymoorejamal.mytimes;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdapter.ViewHolder>{
@@ -52,16 +54,17 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
         holder.leftRotate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast toast = Toast.makeText(mContext, "Rotate left!", Toast.LENGTH_SHORT);
-                toast.show();
+
+                images.set(position, ImageRecyclerAdapter.RotateImage(270, images.get(position)));
+                notifyDataSetChanged();
             }
         });
 
         holder.rightRotate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast toast = Toast.makeText(mContext, "Rotate right", Toast.LENGTH_SHORT);
-                toast.show();
+                images.set(position, ImageRecyclerAdapter.RotateImage(90, images.get(position)));
+                notifyDataSetChanged();
             }
         });
     }
@@ -90,4 +93,24 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
         }
 
     }
+
+
+    public static byte[] RotateImage(int degrees, byte[] image){
+
+        Bitmap imagebitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(imagebitmap, imagebitmap.getWidth(), imagebitmap.getHeight(), true);
+        Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] rotatedByteArray = stream.toByteArray();
+
+        return rotatedByteArray;
+
+    }
 }
+
