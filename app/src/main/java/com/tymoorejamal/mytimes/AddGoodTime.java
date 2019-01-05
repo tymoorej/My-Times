@@ -30,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.regex.Pattern;
 
 
 public class AddGoodTime extends AppCompatActivity {
@@ -84,13 +85,22 @@ public class AddGoodTime extends AppCompatActivity {
 
             private boolean checkValidTitle(String titleText){
                 if (titleText == null || titleText.equals("") || titleText.length() == 0) {
-                    Toast toast = Toast.makeText(AddGoodTime.this, "Please add a Title", Toast.LENGTH_SHORT);
-                    toast.show();
                     return false;
                 }
                 else{
                     return true;
                 }
+            }
+
+            private boolean checkValidTimes(String stimeText, String etimeText){
+                boolean stimeValid= Pattern.compile("[0-9]+-[0-9]+-[0-9]+ [0-9]+:[0-9]+").matcher(stimeText).matches();
+                boolean etimeValid= Pattern.compile("[0-9]+-[0-9]+-[0-9]+ [0-9]+:[0-9]+").matcher(etimeText).matches();
+                return stimeValid && etimeValid && stimeText.compareTo(etimeText) <= 0;
+            }
+
+            private boolean checkValidLocation(String locationText){
+                // TODO: Fix once location is implemented
+                return true;
             }
 
             private void insertTime(DatabaseHandler databaseHandler, EditText title, EditText description, RatingBar rating, String stime, String etime){
@@ -112,8 +122,11 @@ public class AddGoodTime extends AppCompatActivity {
                 RatingBar rating = findViewById(R.id.ratingBar);
                 Button stime = findViewById(R.id.stimeButton);
                 Button etime = findViewById(R.id.etimeButton);
+                Button location = findViewById(R.id.selectLocationButton);
                 String titleText = title.getText().toString().replaceAll("\\s+", "");
-                if(checkValidTitle(titleText) == false){
+                if(!checkValidTitle(titleText) || !checkValidTimes(stime.getText().toString(), etime.getText().toString()) || !checkValidLocation(location.getText().toString())){
+                    Toast toast = Toast.makeText(AddGoodTime.this, "Please fill out all fields correctly", Toast.LENGTH_SHORT);
+                    toast.show();
                     return;
                 }
 
@@ -245,13 +258,7 @@ public class AddGoodTime extends AppCompatActivity {
 
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-                Matrix matrix = new Matrix();
-                matrix.postRotate(90);
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(imageBitmap, imageBitmap.getWidth(), imageBitmap.getHeight(), true);
-                Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-
-
-                rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte imageInByte[] = stream.toByteArray();
                 images.add(imageInByte);
                 initRecyclerView();
@@ -272,14 +279,8 @@ public class AddGoodTime extends AppCompatActivity {
                 return;
             }
             Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-
-            Matrix matrix = new Matrix();
-            matrix.postRotate(90);
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(selectedImage, selectedImage.getWidth(), selectedImage.getHeight(), true);
-            Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
 
             byte imageInByte[] = stream.toByteArray();
 
