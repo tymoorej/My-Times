@@ -1,6 +1,7 @@
 package com.tymoorejamal.mytimes;
 
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,13 +62,13 @@ public class ViewGoodTimeRecyclerViewAdapter extends RecyclerView.Adapter<ViewGo
         TextView itemTitle;
         TextView itemRating;
         TextView itemDescription;
-        RelativeLayout parentLayout;
+        ConstraintLayout parentLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
             itemTitle = itemView.findViewById(R.id.item_title);
             itemRating = itemView.findViewById(R.id.item_rating);
-            itemDescription = itemView.findViewById(R.id.item_decription);
+            itemDescription = itemView.findViewById(R.id.item_description);
             parentLayout = itemView.findViewById(R.id.parent_layout);
 
         }

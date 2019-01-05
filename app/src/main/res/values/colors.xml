@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryBeige">#DABE8A</color>
+    <color name="colorPrimaryPink">#FA8A92</color>
+    <color name="colorPrimaryAqua">#1BABBB</color>
+    <color name="colorPrimaryBlue">#0d669b</color>
+    <color name="colorPrimaryPurple">#AA637A</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#69675f</color>
     <color name="colorGold">#ffd700</color>
