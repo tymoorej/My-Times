@@ -3,10 +3,12 @@ package com.tymoorejamal.mytimes;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,7 +38,7 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
         byte[] image = images.get(position);
         Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
         holder.image.setImageBitmap(bitmap);
-        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+        holder.deleteImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast toast = Toast.makeText(mContext, "Removed image!", Toast.LENGTH_SHORT);
@@ -44,6 +46,22 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
 
                 images.remove(position);
                 notifyDataSetChanged();
+            }
+        });
+
+        holder.leftRotate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast toast = Toast.makeText(mContext, "Rotate left!", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+
+        holder.rightRotate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast toast = Toast.makeText(mContext, "Rotate right", Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
     }
@@ -56,11 +74,20 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
         RelativeLayout parentLayout;
+        ImageButton leftRotate;
+        ImageButton rightRotate;
+        ImageButton deleteImage;
 
         public ViewHolder(View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.image_image);
             parentLayout = itemView.findViewById(R.id.image_parent_layout);
+
+            leftRotate = itemView.findViewById(R.id.left_rotate);
+            rightRotate = itemView.findViewById(R.id.right_rotate);
+            deleteImage = itemView.findViewById(R.id.delete);
+
         }
+
     }
 }
